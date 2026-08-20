@@ -236,6 +236,23 @@
       (= ch \() (let [[st forms] (read-delimited (advance st) \))]
                   [st (located (apply list forms) start st) false])
 
+      ;; The quote reader macro. Without this `'x` read as a SYMBOL NAMED "'x"
+      ;; and `'(1 2)` read as two forms -- the bare symbol `'` followed by the
+      ;; list. Neither was an error, so a source using quote compiled to
+      ;; something else instead of being rejected. Measured 2026-08-20 by
+      ;; differencing this reader against clojure.tools.reader over 234
+      ;; checked-in `.kotoba` files: it was one of three divergences, and the
+      ;; only one that was a gap rather than a deliberate design choice.
+      ;;
+      ;; Expanding to `(quote form)` matches tools.reader exactly, which keeps
+      ;; whatever the frontend already decides about `quote` -- admitting or
+      ;; rejecting it -- the same on both runtimes. That is the point: this
+      ;; reader is not the place to hold an opinion about the grammar.
+      (= ch \') (let [[st form skip?] (read-form (advance st))]
+                  (if skip?
+                    (reject! "quote with no form to quote" {})
+                    [st (located (list 'quote form) start st) false]))
+
       (= ch \[) (let [[st forms] (read-delimited (advance st) \])]
                   [st (located (vec forms) start st) false])
 
