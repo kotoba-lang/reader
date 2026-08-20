@@ -74,3 +74,17 @@
 (deftest strings-keep-their-escapes
   (is (= "a\nb" (read1 "\"a\\nb\"")))
   (is (= "q\"q" (read1 "\"q\\\"q\""))))
+
+(deftest quote-reader-macro-matches-tools-reader
+  ;; Before this, `'x` read as a SYMBOL NAMED "'x" and `'(1 2)` read as TWO
+  ;; forms -- the bare symbol `'` and the list. Neither was an error, so a
+  ;; source using quote compiled to something else rather than being
+  ;; rejected. Found 2026-08-20 by differencing this reader against
+  ;; clojure.tools.reader over 234 checked-in .kotoba files.
+  (is (= '(quote x) (read1 "'x")))
+  (is (= '(quote (a b)) (read1 "'(a b)")))
+  (is (= 1 (count (r/read-forms "'(a b)"))) "one form, not two")
+  (testing "an explicit (quote x) is unchanged"
+    (is (= '(quote x) (read1 "(quote x)"))))
+  (testing "a trailing apostrophe is still part of a symbol"
+    (is (= 'foo' (read1 "foo'")))))
