@@ -62,7 +62,7 @@ further without going red.
 ## Verify
 
 ```sh
-clojure -M:test                                      # JVM
+kbb -M:test                                      # JVM
 npx nbb@1.4.210 --classpath src:test run-tests.cljk  # ClojureScript
 ```
 
