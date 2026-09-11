@@ -63,7 +63,7 @@ further without going red.
 
 ```sh
 clojure -M:test                                      # JVM
-npx nbb@1.4.210 --classpath src:test run-tests.cljs  # ClojureScript
+npx nbb@1.4.210 --classpath src:test run-tests.cljk  # ClojureScript
 ```
 
 Both run the **same** `.cljc` suite: `6 tests, 26 assertions, 0 failures`.
