@@ -2,7 +2,7 @@
   "Runs on BOTH runtimes -- which is the point. This grammar previously had
   two readers, one per host, and the whole risk of that arrangement is that
   they drift on inputs nobody compares."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.reader :as r]))
 
 (defn- read1 [s] (first (r/read-forms s)))
